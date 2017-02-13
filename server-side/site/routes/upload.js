@@ -17,7 +17,7 @@ var Server = mongo.Server,
 var MongoClient = mongo.MongoClient;
 var db = null;
 
-var user = process.env.USER;
+var user = process.env.USERNAME;
 var password = process.env.PASSWORD;
 
 MongoClient.connect("mongodb://" + user + ":" + password + "@localhost:27017/site?authSource=admin", function(err, authdb) {
