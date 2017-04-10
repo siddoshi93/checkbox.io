@@ -20,8 +20,10 @@ var MongoClient = mongo.MongoClient;
 var db = null;
 var user = process.env.USERNAME;
 var password = process.env.PASSWORD;
+var dbip = process.env.DBIP;
 
-MongoClient.connect("mongodb://" + user + ":" + password + "@localhost:27017/site?authSource=admin", function(err, authdb) {
+
+MongoClient.connect("mongodb://" + user + ":" + password + "@" + dbip +":27017/site?authSource=admin", function(err, authdb) {
   // Now you can use the database in the db variable
   db = authdb;
   console.log( err || "connected!" );

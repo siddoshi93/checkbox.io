@@ -41,11 +41,11 @@ SurveyModel = function( incoming, token )
 	self.markdown = incoming.markdown;
 	self.token = token;
 
-	self.adminLink = "http://192.168.33.200/studies/admin/?token=" + token;
+	self.adminLink = "http://" + process.env.PROXYIP + "/studies/admin/?token=" + token;
 
 	self.setPublicLink = function(id)
 	{
-		self.publicLink = "http://192.168.33.200/studies/?id=" + id;
+		self.publicLink = "http://" + process.env.PROXYIP + "/studies/?id=" + id;
 	};
 
 
@@ -78,11 +78,11 @@ DataStudyModel = function( incoming, token )
 	self.markdown = incoming.markdown;
 	self.token = token;
 
-	self.adminLink = "http://192.168.33.200/studies/admin/?token=" + token;
+	self.adminLink = "http://" + process.env.PROXYIP + "/studies/admin/?token=" + token;
 
 	self.setPublicLink = function(id)
 	{
-		self.publicLink = "http://192.168.33.200/studies/?id=" + id;
+		self.publicLink = "http://"+ process.env.PROXYIP + "/studies/?id=" + id;
 	};
 
 
