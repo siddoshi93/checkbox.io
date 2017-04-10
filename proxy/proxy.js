@@ -8,14 +8,16 @@ var proxy = httpProxy.createProxyServer({});
 
 //var target = ['localhost1' , 'localhost2'];
 var target = process.env.WEBIP.split(",");
+var ctr =0;
 
 var server = http.createServer(function(req, res) {
 
 	var value = target.shift();
-	console.log(value);
+	ctr++;
+	console.log(ctr + value);
 	target.push(value);
 
-	proxy.web(req, res, { target: value });
+	proxy.web(req, res, { target: 'http://'value });
 	
 })
 
