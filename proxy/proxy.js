@@ -6,7 +6,8 @@ var proxy = httpProxy.createProxyServer({});
 // REDIS
 //var client = redis.createClient(6379, '127.0.0.1', {});
 
-var target = ['localhost1' , 'localhost2'];
+//var target = ['localhost1' , 'localhost2'];
+var target = process.env.WEBIP.split(",");
 
 var server = http.createServer(function(req, res) {
 
