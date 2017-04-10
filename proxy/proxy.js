@@ -17,7 +17,7 @@ var server = http.createServer(function(req, res) {
 	console.log(ctr + value);
 	target.push(value);
 
-	proxy.web(req, res, { target: 'http://'value });
+	proxy.web(req, res, { target: 'http://' + value });
 	
 })
 
