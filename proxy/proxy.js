@@ -13,8 +13,8 @@ var ctr =0;
 var server = http.createServer(function(req, res) {
 
 	var value = target.shift();
-	ctr++;
-	console.log(ctr + value);
+//	ctr++;
+	console.log(req.url+ ' ' + value);
 	target.push(value);
 
 	proxy.web(req, res, { target: 'http://' + value });
