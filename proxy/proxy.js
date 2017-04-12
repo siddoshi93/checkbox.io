@@ -20,37 +20,33 @@ var percent = 25;
 var server = http.createServer(function(req, res) {
 
 	var value;
-        var re = /^.*\.(js|css|ico|jpg|png|svg|eot|ttf|woff|txt|html)$/;
+    var re = /^.*\.(js|css|ico|jpg|png|svg|eot|ttf|woff|txt|html)$/;
      
 	var chance = Math.random()
-//	console.log(chance);
-//	console.log(36/100); 
-//      console.log((chance * 100 > percent));
-        
 
-
+     
 	//static request
-        if(re.test(req.url))
-		{   
-			//console.log(req.url+ ' ' + value);
-			value = stable_target[0]
-		}
+    if(re.test(req.url))
+	{   
+		//console.log(req.url+ ' ' + value);
+		value = stable_target[0]
+	}
 
-		else
-		{	
-		
-			if(chance * 100 > percent){
+	else
+	{	
+	
+		if(chance * 100 > percent){
 			value = stable_target.shift();
 			stable_target.push(value);
 			console.log(req.url+ ' ' + value + ' stable');
-	}
+		}
 
-else
-{
-	value = unstable_target.shift();
-                    unstable_target.push(value);
-                        console.log(req.url+ ' ' + value + ' unstable');
-}
+		else
+		{
+			value = unstable_target.shift();
+			unstable_target.push(value);
+			console.log(req.url+ ' ' + value + ' unstable');
+		}
 
 	}
 
