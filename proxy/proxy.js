@@ -10,12 +10,28 @@ var proxy = httpProxy.createProxyServer({});
 var target = process.env.WEBIP.split(",");
 var ctr =0;
 
+console.log(target)
+
 var server = http.createServer(function(req, res) {
 
-	var value = target.shift();
+	var value;
 //	ctr++;
-	console.log(req.url+ ' ' + value);
-	target.push(value);
+        var re = /^.*\.(js|css|ico|jpg|png|svg|eot|ttf|woff|txt|html)$/;
+     
+	//static request
+        if(re.test(req.url))
+	{   
+		//console.log(req.url+ ' ' + value);
+		value = target[0]
+	}
+
+	else
+	{	
+		value = target.shift();
+		target.push(value);
+		console.log(req.url+ ' ' + value);
+	}
+
 
 	proxy.web(req, res, { target: 'http://' + value });
 	
