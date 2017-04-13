@@ -32,7 +32,7 @@ var emailServer  = emailjs.server.connect({
 });
 
 exports.createStudy = function(req, res) {
-    client.get(createStudy,function(err,value){
+    client.get("createStudy",function(err,value){
       if(value == "off"){
         console.log("off");
         res.send('This feature is unavailable');
