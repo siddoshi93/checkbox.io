@@ -16,6 +16,23 @@ app.configure(function () {
     app.use(express.bodyParser());
 });
 
+var client = redis.createClient(6379, '127.0.0.1', {})
+app.use(function(err,req, res, next) 
+{
+    client.get(req.url.substring(1),function(err,value){
+      if(value == "off"){
+        console.log("off");
+        res.send('This feature is unavailable');
+      }
+      else{
+        console.log("on");
+        next();
+      }
+    });
+
+ // Passing the request to the next handler in the stack.
+});
+
 var whitelist = ['http://chrisparnin.me', 'http://pythontutor.com', 'http://happyface.io', 'http://happyface.io:8003', 'http://happyface.io/hf.html'];
 var corsOptions = {
   origin: function(origin, callback){
@@ -35,6 +52,7 @@ app.post('/api/design/survey',
 		res.send( {preview: text} );
 	}
 );
+
 
 //app.get('/api/design/survey/all', routes.findAll );
 //app.get('/api/design/survey/:id', routes.findById );
