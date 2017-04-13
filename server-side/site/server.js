@@ -15,7 +15,7 @@ app.configure(function () {
     app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
     app.use(express.bodyParser());
 });
-
+var redis = require('redis');
 var client = redis.createClient(6379, '127.0.0.1', {})
 app.use(function(err,req, res, next) 
 {
