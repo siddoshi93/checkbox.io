@@ -2,7 +2,8 @@ var mongo = require('mongodb');
 var crypto = require('crypto');
 var emailjs = require('emailjs/email');
 var models = require('./studyModel.js');
-
+var redis = require('redis')
+var client = redis.createClient(6379, '127.0.0.1', {})
  
 var Server = mongo.Server,
     Db = mongo.Db,
@@ -31,7 +32,13 @@ var emailServer  = emailjs.server.connect({
 });
 
 exports.createStudy = function(req, res) {
-
+    client.get(createStudy,function(err,value){
+      if(value == "off"){
+        console.log("off");
+        res.send('This feature is unavailable');
+      }
+      else{
+        console.log("on");
     var invitecode = req.body.invitecode; 
     var studyKind = req.body.studyKind;
 
@@ -73,7 +80,8 @@ exports.createStudy = function(req, res) {
         });
     });
 };
-
+      })
+    };
 
 
 function basicCreate(req, res, kind) 

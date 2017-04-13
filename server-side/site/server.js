@@ -15,9 +15,7 @@ app.configure(function () {
     app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
     app.use(express.bodyParser());
 });
-var redis = require('redis');
-var client = redis.createClient(6379, '127.0.0.1', {})
-app.use(function(err,req, res, next) 
+/*app.use(function(err,req, res, next) 
 {   console.log(req.url);
     client.get(req.url.substring(1),function(err,value){
       if(value == "off"){
@@ -31,7 +29,7 @@ app.use(function(err,req, res, next)
     });
 
  // Passing the request to the next handler in the stack.
-});
+}); */
 
 var whitelist = ['http://chrisparnin.me', 'http://pythontutor.com', 'http://happyface.io', 'http://happyface.io:8003', 'http://happyface.io/hf.html'];
 var corsOptions = {
