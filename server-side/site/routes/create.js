@@ -81,7 +81,7 @@ exports.createStudy = function(req, res) {
         else
         {
              console.log("on");
-                res.send({'error':'Cannot create study. Feature unavailable'});
+                res.send({'error':'Feature unavailable'});
              
         }
 
