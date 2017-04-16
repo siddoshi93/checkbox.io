@@ -41,10 +41,10 @@ app.get('/api/design/survey/all', routes.findAll );
 app.get('/api/design/survey/:id', routes.findById );
 app.get('/api/design/survey/admin/:token', routes.findByToken );
 
-//app.post('/api/design/survey/save', routes.saveSurvey );
-//app.post('/api/design/survey/open/', routes.openSurvey );
-//app.post('/api/design/survey/close/', routes.closeSurvey );
-//app.post('/api/design/survey/notify/', routes.notifyParticipant );
+app.post('/api/design/survey/save', routes.saveSurvey );
+app.post('/api/design/survey/open/', routes.openSurvey );
+app.post('/api/design/survey/close/', routes.closeSurvey );
+app.post('/api/design/survey/notify/', routes.notifyParticipant );
 
 
 //// ################################
@@ -69,7 +69,7 @@ app.post('/api/study/admin/notify/', admin.notifyParticipant);
 
 //// ################################
 
-//app.post('/api/upload', upload.uploadFile );
+app.post('/api/upload', upload.uploadFile );
 
 // survey listing for studies.
 app.get('/api/design/survey/all/listing', routes.studyListing );
