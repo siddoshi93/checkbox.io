@@ -1,9 +1,9 @@
 var express = require('express'),
         cors = require('cors'),
 	marqdown = require('./marqdown.js'),
-	//routes = require('./routes/designer.js'),
-	//votes = require('./routes/live.js'),
-	//upload = require('./routes/upload.js'),
+	routes = require('./routes/designer.js'),
+	votes = require('./routes/live.js'),
+	upload = require('./routes/upload.js'),
 	create = require('./routes/create.js'),
 	study = require('./routes/study.js'),
 	admin = require('./routes/admin.js')
@@ -72,7 +72,7 @@ app.post('/api/study/admin/notify/', admin.notifyParticipant);
 //app.post('/api/upload', upload.uploadFile );
 
 // survey listing for studies.
-//app.get('/api/design/survey/all/listing', routes.studyListing );
+app.get('/api/design/survey/all/listing', routes.studyListing );
 
 // Download
 //app.get('/api/design/survey/vote/download/:token', votes.download );
@@ -80,10 +80,10 @@ app.post('/api/study/admin/notify/', admin.notifyParticipant);
 //app.get('/api/design/survey/winner/:token', votes.pickParticipant );
 
 // Voting
-//app.get('/api/design/survey/vote/all', votes.findAll );
-//app.post('/api/design/survey/vote/cast', votes.castVote );
-//app.get('/api/design/survey/vote/status', votes.status );
-//app.get('/api/design/survey/vote/stat/:id', votes.getSurveyStats );
+app.get('/api/design/survey/vote/all', votes.findAll );
+app.post('/api/design/survey/vote/cast', votes.castVote );
+app.get('/api/design/survey/vote/status', votes.status );
+app.get('/api/design/survey/vote/stat/:id', votes.getSurveyStats );
 
 
 
