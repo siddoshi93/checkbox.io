@@ -37,9 +37,9 @@ app.post('/api/design/survey',
 );
 
 
-//app.get('/api/design/survey/all', routes.findAll );
-//app.get('/api/design/survey/:id', routes.findById );
-//app.get('/api/design/survey/admin/:token', routes.findByToken );
+app.get('/api/design/survey/all', routes.findAll );
+app.get('/api/design/survey/:id', routes.findById );
+app.get('/api/design/survey/admin/:token', routes.findByToken );
 
 //app.post('/api/design/survey/save', routes.saveSurvey );
 //app.post('/api/design/survey/open/', routes.openSurvey );
@@ -75,9 +75,9 @@ app.post('/api/study/admin/notify/', admin.notifyParticipant);
 app.get('/api/design/survey/all/listing', routes.studyListing );
 
 // Download
-//app.get('/api/design/survey/vote/download/:token', votes.download );
+app.get('/api/design/survey/vote/download/:token', votes.download );
 // Winner
-//app.get('/api/design/survey/winner/:token', votes.pickParticipant );
+app.get('/api/design/survey/winner/:token', votes.pickParticipant );
 
 // Voting
 app.get('/api/design/survey/vote/all', votes.findAll );
