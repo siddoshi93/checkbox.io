@@ -69,8 +69,8 @@ exports.createStudy = function(req, res) {
                                 function(err, result )
                             {
                                 sendStudyEmail( study );
-                                //res.send({admin_url: study.adminLink});
-                                res.sendStatus(500);
+                                res.send({admin_url: study.adminLink});
+
 
                             });
                 		}
