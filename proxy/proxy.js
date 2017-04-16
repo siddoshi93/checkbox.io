@@ -18,7 +18,7 @@ console.log(unstable_target)
 
 //var ctr = 0;
 
-var percent = 25;
+var percent = 100;
 
 var server = http.createServer(function(req, res) {
 
@@ -42,29 +42,29 @@ var server = http.createServer(function(req, res) {
 	// else
 	// {	
 	
-	if(chance * 100 > percent){
+	if(chance * 100 > percent || unstable_target.length == 0){
 		value = stable_target.shift();
+		stable_target.push(value);
 		
-		
-	
+		//console.log(value)
 
 		proxy.web(req, res, { target: 'http://' + value });
 
 		res.on('finish', function() {
 			latency = new Date().getTime() - starttime
 	    	console.log(req.url+ ' ' + value + ' stable ' +  latency + 'ms');
-	    	console.log(Math.floor((res.statusCode / 100)))
+	    	//console.log(Math.floor((res.statusCode / 100)))
 
 	    	status  = Math.floor((res.statusCode / 100))
 
-	    	if(status == 4 || status == 5 || latency >= 500)
-	    	{
-	    		console.log("removing" + value);
-	    	}
-	    	else
-	    	{
-	    		stable_target.push(value);
-	    	}
+	    	// if(status == 4 || status == 5 || latency >= 500)
+	    	// {
+	    	// 	console.log("removing" + value);
+	    	// }
+	    	// else
+	    	// {
+	    		
+	    	// }
 
 
 	    });
@@ -75,24 +75,23 @@ var server = http.createServer(function(req, res) {
 	else
 	{
 		value = unstable_target.shift();
-		//unstable_target.push(value);
+		unstable_target.push(value);
+		//console.log(value);
 		
 		proxy.web(req, res, { target: 'http://' + value });
 
 		res.on('finish', function() {
 			latency = new Date().getTime() - starttime
-	    	console.log(req.url+ ' ' + value + ' stable ' +  latency + 'ms');
+	    	console.log(req.url+ ' ' + value + ' unstable ' +  latency + 'ms');
 	    	
 	    	status  = Math.floor((res.statusCode / 100))
 
 	    	if(status == 4 || status == 5 || latency >= 500)
 	    	{
-	    		console.log("removing" + value);
+	    		console.log("Canary alert raised. Closing traffic to unstable versions");
+	    		unstable_target=[];
 	    	}
-	    	else
-	    	{
-	    		unstable_target.push(value);
-	    	}
+	    	
 	    });
 		
 	   	
