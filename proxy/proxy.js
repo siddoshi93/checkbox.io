@@ -10,8 +10,11 @@ var proxy = httpProxy.createProxyServer({});
 var stable_target = process.env.WEBIP.split(",");
 var unstable_target = process.env.UNSTABLEWEBIP.split(",");
 
+
 console.log(stable_target)
 console.log(unstable_target)
+
+
 
 //var ctr = 0;
 
@@ -24,35 +27,82 @@ var server = http.createServer(function(req, res) {
      
 	var chance = Math.random()
 
+	//monitoring
+	var starttime = new Date().getTime();
+	var latency = 500;
      
 	//static request
-    if(re.test(req.url))
-	{   
-		//console.log(req.url+ ' ' + value);
-		value = stable_target[0]
+ //    if(re.test(req.url))
+	// {   
+	// 	//console.log(req.url+ ' ' + value);
+	// 	value = stable_target[0]
+		
+	// }
+
+	// else
+	// {	
+	
+	if(chance * 100 > percent){
+		value = stable_target.shift();
+		
+		
+	
+
+		proxy.web(req, res, { target: 'http://' + value });
+
+		res.on('finish', function() {
+			latency = new Date().getTime() - starttime
+	    	console.log(req.url+ ' ' + value + ' stable ' +  latency + 'ms');
+	    	console.log(Math.floor((res.statusCode / 100)))
+
+	    	status  = Math.floor((res.statusCode / 100))
+
+	    	if(status == 4 || status == 5 || latency >= 500)
+	    	{
+	    		console.log("removing" + value);
+	    	}
+	    	else
+	    	{
+	    		stable_target.push(value);
+	    	}
+
+
+	    });
+		
+
 	}
 
 	else
-	{	
-	
-		if(chance * 100 > percent){
-			value = stable_target.shift();
-			stable_target.push(value);
-			console.log(req.url+ ' ' + value + ' stable');
-		}
+	{
+		value = unstable_target.shift();
+		//unstable_target.push(value);
+		
+		proxy.web(req, res, { target: 'http://' + value });
 
-		else
-		{
-			value = unstable_target.shift();
-			unstable_target.push(value);
-			console.log(req.url+ ' ' + value + ' unstable');
-		}
+		res.on('finish', function() {
+			latency = new Date().getTime() - starttime
+	    	console.log(req.url+ ' ' + value + ' stable ' +  latency + 'ms');
+	    	
+	    	status  = Math.floor((res.statusCode / 100))
 
+	    	if(status == 4 || status == 5 || latency >= 500)
+	    	{
+	    		console.log("removing" + value);
+	    	}
+	    	else
+	    	{
+	    		unstable_target.push(value);
+	    	}
+	    });
+		
+	   	
 	}
 
 	
-	proxy.web(req, res, { target: 'http://' + value });
+
 	
+
+
 })
 
 server.listen(5050)
