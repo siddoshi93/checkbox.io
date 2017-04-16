@@ -1,9 +1,9 @@
 var express = require('express'),
         cors = require('cors'),
 	marqdown = require('./marqdown.js'),
-	routes = require('./routes/designer.js'),
-	votes = require('./routes/live.js'),
-	upload = require('./routes/upload.js'),
+	//routes = require('./routes/designer.js'),
+	//votes = require('./routes/live.js'),
+	//upload = require('./routes/upload.js'),
 	create = require('./routes/create.js'),
 	study = require('./routes/study.js'),
 	admin = require('./routes/admin.js')
@@ -37,14 +37,14 @@ app.post('/api/design/survey',
 );
 
 
-app.get('/api/design/survey/all', routes.findAll );
-app.get('/api/design/survey/:id', routes.findById );
-app.get('/api/design/survey/admin/:token', routes.findByToken );
+//app.get('/api/design/survey/all', routes.findAll );
+//app.get('/api/design/survey/:id', routes.findById );
+//app.get('/api/design/survey/admin/:token', routes.findByToken );
 
-app.post('/api/design/survey/save', routes.saveSurvey );
-app.post('/api/design/survey/open/', routes.openSurvey );
-app.post('/api/design/survey/close/', routes.closeSurvey );
-app.post('/api/design/survey/notify/', routes.notifyParticipant );
+//app.post('/api/design/survey/save', routes.saveSurvey );
+//app.post('/api/design/survey/open/', routes.openSurvey );
+//app.post('/api/design/survey/close/', routes.closeSurvey );
+//app.post('/api/design/survey/notify/', routes.notifyParticipant );
 
 
 //// ################################
@@ -69,21 +69,21 @@ app.post('/api/study/admin/notify/', admin.notifyParticipant);
 
 //// ################################
 
-app.post('/api/upload', upload.uploadFile );
+//app.post('/api/upload', upload.uploadFile );
 
 // survey listing for studies.
-app.get('/api/design/survey/all/listing', routes.studyListing );
+//app.get('/api/design/survey/all/listing', routes.studyListing );
 
 // Download
-app.get('/api/design/survey/vote/download/:token', votes.download );
+//app.get('/api/design/survey/vote/download/:token', votes.download );
 // Winner
-app.get('/api/design/survey/winner/:token', votes.pickParticipant );
+//app.get('/api/design/survey/winner/:token', votes.pickParticipant );
 
 // Voting
-app.get('/api/design/survey/vote/all', votes.findAll );
-app.post('/api/design/survey/vote/cast', votes.castVote );
-app.get('/api/design/survey/vote/status', votes.status );
-app.get('/api/design/survey/vote/stat/:id', votes.getSurveyStats );
+//app.get('/api/design/survey/vote/all', votes.findAll );
+//app.post('/api/design/survey/vote/cast', votes.castVote );
+//app.get('/api/design/survey/vote/status', votes.status );
+//app.get('/api/design/survey/vote/stat/:id', votes.getSurveyStats );
 
 
 
