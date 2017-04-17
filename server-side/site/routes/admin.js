@@ -32,8 +32,16 @@ MongoClient.connect("mongodb://" + user + ":" + password + "@" + dbip +":27017/s
 exports.loadStudy = function(req, res) {
     var token = req.params.token;
     console.log('Retrieving study by token: ' + token);
+    //unstable
+    //res.sendStatus(500);
     db.collection('studies', function(err, collection) {
         collection.findOne({'token':token}, function(err, item) {
+            
+            //unstable
+            var seconds = 3;
+            var waitTill = new Date(new Date().getTime() + seconds * 1000);
+            while(waitTill > new Date()){}
+
             res.send(item);
         });
     });
