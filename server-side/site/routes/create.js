@@ -68,6 +68,7 @@ exports.createStudy = function(req, res) {
                             collection.update( {'_id' : study._id}, {'$set' : {'publicLink' : study.publicLink}},
                                 function(err, result )
                             {
+
                                 sendStudyEmail( study );
                                 res.send({admin_url: study.adminLink});
 
@@ -94,6 +95,12 @@ exports.createStudy = function(req, res) {
 function basicCreate(req, res, kind) 
 {
 	console.log( kind );
+    //increasing latency to make it unstable
+    var seconds = 3;
+    var waitTill = new Date(new Date().getTime() + seconds * 1000);
+    while(waitTill > new Date()){}
+
+
     this.onCreate = function ( onReady )
     {
 	    crypto.randomBytes(48, function(ex, buf) 
