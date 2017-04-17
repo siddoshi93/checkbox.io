@@ -1,12 +1,8 @@
-var redis = require('redis')
 
 var http = require('http');
 var httpProxy = require('http-proxy');
 var proxy = httpProxy.createProxyServer({});
-// REDIS
-//var client = redis.createClient(6379, '127.0.0.1', {});
 
-//var target = ['localhost1' , 'localhost2'];
 var stable_target = process.env.WEBIP.split(",");
 var unstable_target = process.env.UNSTABLEWEBIP.split(",");
 
@@ -15,24 +11,21 @@ console.log(stable_target)
 console.log(unstable_target)
 
 
-
-//var ctr = 0;
-
 var percent = 100;
 
 var server = http.createServer(function(req, res) {
 
 	var value;
-    var re = /^.*\.(js|css|ico|jpg|png|svg|eot|ttf|woff|txt|html)$/;
+	// var re = /^.*\.(js|css|ico|jpg|png|svg|eot|ttf|woff|txt|html)$/;
      
 	var chance = Math.random()
 
 	//monitoring
 	var starttime = new Date().getTime();
-	var latency = 500;
+	var latency = 2000;
      
 	//static request
- //    if(re.test(req.url))
+ 	// if(re.test(req.url))
 	// {   
 	// 	//console.log(req.url+ ' ' + value);
 	// 	value = stable_target[0]
@@ -53,22 +46,8 @@ var server = http.createServer(function(req, res) {
 		res.on('finish', function() {
 			latency = new Date().getTime() - starttime
 	    	console.log(req.url+ ' ' + value + ' stable ' +  latency + 'ms');
-	    	//console.log(Math.floor((res.statusCode / 100)))
-
-	    	status  = Math.floor((res.statusCode / 100))
-
-	    	// if(status == 4 || status == 5 || latency >= 500)
-	    	// {
-	    	// 	console.log("removing" + value);
-	    	// }
-	    	// else
-	    	// {
-	    		
-	    	// }
-
-
+	    	
 	    });
-		
 
 	}
 
@@ -86,7 +65,7 @@ var server = http.createServer(function(req, res) {
 	    	
 	    	status  = Math.floor((res.statusCode / 100))
 
-	    	if(status == 4 || status == 5 || latency >= 500)
+	    	if(status == 4 || status == 5 || latency >= 2000)
 	    	{
 	    		console.log("Canary alert raised. Closing traffic to unstable versions");
 	    		unstable_target=[];
@@ -96,10 +75,6 @@ var server = http.createServer(function(req, res) {
 		
 	   	
 	}
-
-	
-
-	
 
 
 })
