@@ -15,6 +15,7 @@ function main()
     findAllFiles(startPoint,args);    
     
    // args= ['analysis.js']
+   // var i =0;
 
 	for(var i = 0;i < args.length;i++){
 	var filePath = args[i];
