@@ -11,7 +11,7 @@ console.log(stable_target)
 console.log(unstable_target)
 
 
-var percent = 100;
+var percent = 25;
 
 var server = http.createServer(function(req, res) {
 
