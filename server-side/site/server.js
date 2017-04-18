@@ -67,6 +67,11 @@ app.post('/api/study/admin/open/', admin.openStudy );
 app.post('/api/study/admin/close/', admin.closeStudy );
 app.post('/api/study/admin/notify/', admin.notifyParticipant);
 
+//canary version
+app.get('/canary', function (req, res) {
+	res.send("This is route is only available in canary version")
+})
+
 //// ################################
 
 //app.post('/api/upload', upload.uploadFile );
