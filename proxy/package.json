@@ -10,8 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "express": "^4.12.3",
-    "multer": "^0.1.8"
-   
+    "multer": "^0.1.8",
+    "redis": "^0.12.1"
   },
   "dependencies": {
     "http-proxy": "^1.16.2"
