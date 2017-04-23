@@ -78,3 +78,8 @@ socket.on('connect', function () {
 
 	}, 5000);
 });
+
+socket.on('disconnect', function(){
+	console.log('disconnected');
+	clearInterval(timer);
+})
