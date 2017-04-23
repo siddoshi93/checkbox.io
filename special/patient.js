@@ -1,9 +1,9 @@
 var os = require('os');
 var ip = require("ip");
 var io = require('socket.io-client');
+var socket = io.connect('http://162.243.245.226:3000', {reconnect: false});
 
-
-var data ={};
+//////////functions
 
 function memoryLoad()
 {
@@ -51,41 +51,30 @@ function cpuAverage()
 }
 
 
+var timer;
+var latency = 5000;
+var start;
+// Add a connect listener
+socket.on('connect', function () {
+    console.log('Connected!');
 
-
-
-var timer = setInterval( function () 
-{
-	data = { 
-		name: ip.address(),cpu: cpuAverage(), memoryLoad: memoryLoad()		
-	};
-
-
-	
-}, 5000);
-
-
-
-var socket = io.connect('http://107.170.35.42:3000' , {'reconnect': false});
+    start = Date.now();
+    socket.emit('ding','up');
     
-socket.once('connect',function () {
-	data = { 
-		name: ip.address(),cpu: cpuAverage(), memoryLoad: memoryLoad()		
-	};
 
-	console.log(ip.address())
-	console.log("Client connected")
+    socket.on('dong', function() {
+	  latency = Date.now() - start;
+//	  console.log(latency);
+	});
 
-	 socket.on("heartbeat", function() 
-    {
-    	console.log(data);
-       socket.emit("data", data);
-        
-    });
+    timer = setInterval( function () {
+		console.log('sending ' , ip.address(), ' ', cpuAverage(), ' ', memoryLoad(), ' ', latency);
+		socket.emit('data', ip.address(), cpuAverage(), memoryLoad(),latency);
+		
+		socket.emit('ding','up');
+		//console.log('ding' + Date.now())
+		start = Date.now()
+		
 
-    socket.on('disconnect', function () {
-		console.log("closing connection")
-    	clearInterval(timer);
-  	});
-
+	}, 5000);
 });

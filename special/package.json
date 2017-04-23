@@ -9,13 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.15.2",
     "http": "0.0.0",
     "ip": "^1.1.5",
+    "needle": "^0.7.10",
+    "node-ansible": "^0.5.5",
     "os": "^0.1.1",
     "redis": "^2.7.1",
     "socket.io": "^1.7.3",
-    "socket.io-client": "^1.7.3",
-    "needle": "^0.7.10", 
-    "node-ansible": "^0.5.5"
+    "socket.io-client": "^1.7.3"
   }
 }

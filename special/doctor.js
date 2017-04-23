@@ -1,49 +1,92 @@
-
-var http = require('http');
-var io = require('socket.io')(3000);
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 var redis = require('redis');
 var Ansible = require('node-ansible');
-var fs      = require('fs')
+var needle = require("needle");
+var fs = require('fs');
+
 var redisClient = redis.createClient(6379, '127.0.0.1', {})
-io.on('connection', function (socket) {
+var lock = false;
+
+buildMap();
+
+var serverMap = {};
+var config = {};
+config.token = process.env.DIGITALOCEAN;
+
+var dropletData = 
+		{
+			"name":"web",
+			"region":"nyc3",
+			"size":"512mb",
+			"image":"ubuntu-14-04-x64",
+			"ssh_keys":[8075842,8403284,8403407],
+			"backups":false,
+			"ipv6":false,
+			"user_data":null,
+			"private_networking":null
+		};
 
 
-var timer= setInterval( function () 
-  {
-   
-    io.sockets.emit('heartbeat');
-  }, 5000);
+var headers =
+{
+	'Content-Type':'application/json',
+	Authorization: 'Bearer ' + config.token
+};
 
 
-  socket.on('data', function (data) {
+buildMap();
+console.log(serverMap);
 
-    //var temp = data;
+io.on('connection', function (socket){
+	console.log('connection');
 
-    redisClient.llen("stable_target_queue",function(err,numServers){
-    	console.log(numServers);
-    	if(data['cpu'] > 0.7 && data['memoryLoad'] > 85){
-		    if(numServers > 1){ 
-		    	console.log("in");
-		    	redisClient.lrem("stable_target_queue",0,data['name'],function(err2,reply1){
-		    		socket.disconnect();
-		    		console.log("disconnecting" + data['name']);
-		    	});
-		    	console.log(data['name'] + " has cpu" + data['cpu'] + " and mem " + data['memoryLoad']);
-		    	//rebootDroplet(data['name'].toString());
-			}
-			else{
-				console.log("only one server remaining");
-			}
-		}
+	socket.on('ding', function() {
+	   // console.log('ding' + Date.now() );
+	    socket.emit('dong','down');
+	});
 
-    });	
 
-    
-    });
+  	socket.on('data', function (IP, CPU, memory, latency) {
+    	console.log('IP Address: ', IP, ' CPU: ', CPU, ' mem: ', memory, ' latency: ', latency);
 
+	
+		if(CPU > 0.7 && memory > 85)
+		{
+			redisClient.llen("stable_target_queue",function(err,numServers){
+	    	//console.log(numServers);
+	    
+			    if(numServers > 1){ 
+			    	//console.log("in");
+			    	redisClient.lrem("stable_target_queue",0,data['name'],function(err2,reply1){
+			    		socket.disconnect();
+			    		console.log("disconnecting" + IP);
+			    	});
+			    	console.log('IP Address: ', IP, ' CPU: ', CPU, ' mem: ', memory);
+			    	//rebootDroplet(data['name'].toString());
+				}
+
+				else{
+					
+					console.log("only one server remaining");
+					if(!lock)
+					{
+						console.log("spawning new server");
+						lock = true;
+						//createDroplet();
+					}
+				}
+	    	});		
+		}   
+	});
 });
 
-//rebootDroplet("162.243.32.107")
+http.listen(3000, function () {
+  	console.log('listening on *:3000');
+});
+
+
 function rebootDroplet(ip) {
 	var command = new Ansible.Playbook().playbook('mainReboot');
 
@@ -59,10 +102,99 @@ function rebootDroplet(ip) {
 		//command.verbose('v');
 		var promise = command.exec();
 		promise.then(function(result) {
-			redisClient.lpush("stable_target_queue", ip);
+			
+
 			console.log(result.output);
 			console.log(result.code);
+			if(result.code == 0)
+			{
+				redisClient.lpush("stable_target_queue", ip);
+			}
+
 		})
 	}); 	
 }
 
+
+
+// function createDroplet()
+// {
+// 	needle.post("https://api.digitalocean.com/v2/droplets", dropletData, {headers:headers,json:true}, function(err, resp, body)
+// 	{ 
+
+
+// 		dropletId = body.droplet.id;
+// 	 	console.log("Created Droplet: " + dropletId);
+
+
+// 	 	if(!err && resp.statusCode == 202)
+// 		{
+
+// 	 		setTimeout(function tempfun(){ 
+
+// 	 			needle.get("https://api.digitalocean.com/v2/droplets/" + dropletId, {headers:headers}, function( error,response) 
+// 	 			{
+
+// 			 		var temp = response.body;
+// 			 		var ip_addr = temp.droplet.networks.v4[0].ip_address;
+// 					console.log("Public IP Address: " + ip_addr);
+			
+// 					var command = new Ansible.Playbook().playbook('webSetup');
+
+// 					var entry = "[webserver]\nweb ansible_ssh_host=" + 	ip_addr + " ansible_ssh_user=root";	
+					
+// 					fs.writeFile("inventoryWeb", entry, function(err) {
+// 					    if(err) {
+// 					        return console.log(err);
+// 					    }
+// 					    console.log("Saved temp inventory");
+// 					    command.inventory('inventoryWeb');
+// 						//command.verbose('v');
+// 						var promise = command.exec();
+						
+// 						promise.then(function(result) {
+					
+
+// 							console.log(result.output);
+// 							console.log(result.code);
+// 							if(result.code == 0)
+// 							{
+// 								redisClient.lpush("stable_target_queue", ip_addr);
+// 								lock = false;
+// 							}
+
+// 						})
+// 					}); 	
+
+// 			 	}); 
+// 		 	}, 4000);
+// 	 	}
+
+
+// 		});
+
+// }
+
+
+
+function buildMap()
+{
+
+	needle.get("https://api.digitalocean.com/v2/droplets" , {headers:headers}, function( error,response) {
+
+		var droplets = response.body.droplets;
+		
+		console.log(droplets.length)
+
+		for (var i in droplets)
+		{
+			var ip_addr = droplets[i].networks.v4[0].ip_address;
+			serverMap[ip_addr] = droplets[i].id
+		}
+			
+
+	});
+
+
+
+}
