@@ -11,7 +11,7 @@ io.on('connection', function (socket) {
 var timer= setInterval( function () 
   {
    
-    io.sockets.emit('heartbeat');
+    socket.emit('heartbeat');
   }, 5000);
 
 
