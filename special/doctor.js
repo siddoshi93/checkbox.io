@@ -59,6 +59,7 @@ function rebootDroplet(ip) {
 		//command.verbose('v');
 		var promise = command.exec();
 		promise.then(function(result) {
+			redisClient.lpush("stable_target_queue", ip);
 			console.log(result.output);
 			console.log(result.code);
 		})
