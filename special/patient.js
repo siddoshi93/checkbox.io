@@ -85,7 +85,7 @@ socket.once('connect',function () {
 
     socket.on('disconnect', function () {
 		console.log("closing connection")
-    	clearInterval(timer);
+    	//clearInterval(timer);
   	});
 
 });
