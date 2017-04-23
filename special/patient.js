@@ -1,7 +1,7 @@
 var os = require('os');
 var ip = require("ip");
 var io = require('socket.io-client');
-var socket = io.connect('http://162.243.245.226:3000', {reconnect: false});
+var socket = io.connect('http://162.243.245.226:3000', {reconnect: true});
 
 //////////functions
 
@@ -52,32 +52,33 @@ function cpuAverage()
 
 
 var timer;
-var latency = 5000;
+var latency = 0;
 var start;
 // Add a connect listener
 socket.on('connect', function () {
     console.log('Connected!');
 
+    
     start = Date.now();
     socket.emit('ding','up');
-    
 
-    socket.on('dong', function() {
-	  latency = Date.now() - start;
-//	  console.log(latency);
-	});
+    
 
     timer = setInterval( function () {
 		console.log('sending ' , ip.address(), ' ', cpuAverage(), ' ', memoryLoad(), ' ', latency);
 		socket.emit('data', ip.address(), cpuAverage(), memoryLoad(),latency);
-		
-		socket.emit('ding','up');
-		//console.log('ding' + Date.now())
-		start = Date.now()
-		
 
 	}, 5000);
 });
+
+socket.on('dong', function() {
+	  latency = Date.now() - start;
+	  
+//	  console.log(latency);
+		start = Date.now();
+    	socket.emit('ding','up');
+
+	});
 
 socket.on('disconnect', function(){
 	console.log('disconnected');
