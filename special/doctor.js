@@ -2,6 +2,8 @@
 var http = require('http');
 var io = require('socket.io')(3000);
 var redis = require('redis');
+var Ansible = require('node-ansible');
+var fs      = require('fs')
 var redisClient = redis.createClient(6379, '127.0.0.1', {})
 io.on('connection', function (socket) {
 
@@ -27,6 +29,7 @@ var timer= setInterval( function ()
 		    		console.log("disconnecting" + data['name']);
 		    	});
 		    	console.log(data['name'] + " has cpu" + data['cpu'] + " and mem " + data['memoryLoad']);
+		    	//rebootDroplet(data['name'].toString());
 			}
 			else{
 				console.log("only one server remaining");
@@ -39,4 +42,26 @@ var timer= setInterval( function ()
     });
 
 });
+
+//rebootDroplet("162.243.32.107")
+function rebootDroplet(ip) {
+	var command = new Ansible.Playbook().playbook('mainReboot');
+
+	//create inventory
+	var entry = "[webserver]\nweb ansible_ssh_host=" + 
+		ip + " ansible_ssh_user=root";	
+	fs.writeFile("inventoryReboot", entry, function(err) {
+	    if(err) {
+	        return console.log(err);
+	    }
+	    console.log("Saved temp inventory");
+	    command.inventory('inventoryReboot');
+		//command.verbose('v');
+		var promise = command.exec();
+		promise.then(function(result) {
+			console.log(result.output);
+			console.log(result.code);
+		})
+	}); 	
+}
 
