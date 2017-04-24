@@ -27,6 +27,7 @@
        - npm
        - redis-server
 
+
     - name: copy git production repository
       git: repo=https://github.com/siddoshi93/checkbox.io.git dest=/root/production-www accept_hostkey=yes version=special
   

@@ -208,8 +208,12 @@ function buildMap()
 {
     needle.get("https://api.digitalocean.com/v2/droplets" , {headers:headers}, function( error,response) {
         
+    	//console.log(response.body);
+
         var droplets = response.body.droplets;
-    
+    	
+
+
         for (var i in droplets)
         {
             var ip_addr = droplets[i].networks.v4[0].ip_address;
