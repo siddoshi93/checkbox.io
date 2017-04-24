@@ -63,6 +63,7 @@ io.on('connection', function (socket){
                  redisClient.lrem("stable_target_queue",0,IP,function(err2,reply1){
                     
                      console.log("Rebooting" + IP);
+		     console.log("Removing "+ IP + " from redis until restart" );
                      rebootDroplet(IP);
                  });
                  //console.log('IP Address: ', IP, ' CPU: ', CPU, ' mem: ', memory);
@@ -98,13 +99,13 @@ function rebootDroplet(ip) {
         timer1 = setInterval( function () {        
       
             checkstatus(serverMap[ip], function(state, ip_address){
-                if(state == 'off')
+                console.log(state);
+		if(state == 'off')
                 {
-                    //console.log(state);
                     clearInterval(timer1);
                     timer2 = setInterval( function () {
                         checkstatus(serverMap[ip],  function(stateinner,ip_address_inner){
-                           // console.log(stateinner)
+                            console.log(stateinner)
                             if(stateinner == 'active')
                             {
                                 clearInterval(timer2);
@@ -135,7 +136,7 @@ function createDroplet()
             console.log("Created Droplet: " + dropletId);
             timer = setInterval( function () {
 		        checkstatus(dropletId, function(state, ip_address){
-			       	//console.log(state);
+			       	console.log(state);
 		          	if(state == 'active'){
 	          
 	            		clearInterval(timer);
@@ -186,7 +187,8 @@ function runansible(playbook,filename,ip ,isCreate)
                 }
                
                 redisClient.lpush("stable_target_queue", ip);
-            }
+            	console.log("Added "+ ip + " to redis" );
+	    }
         })
     }); 
 }
