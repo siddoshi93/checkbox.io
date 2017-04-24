@@ -2,7 +2,7 @@ var os = require('os');
 var ip = require("ip");
 var io = require('socket.io-client');
 
-var socket = io.connect('http://localhost:3000', {reconnect: true});
+var socket = io.connect('http://'+ process.env.PROXYIP +':3000', {reconnect: true});
 
 //////////functions
 
