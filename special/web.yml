@@ -1,0 +1,66 @@
+- hosts: webserver
+  tags: ['webserver']
+  become: yes
+  tasks:
+    - name: install git, nginx, node, npm, redis-server 
+      apt: name={{ item }} update_cache=yes state=latest force=yes
+      with_items:
+       - git
+       - nginx
+       - nodejs-legacy
+       - npm
+       - redis-server
+
+    - name: copy git production repository
+      git: repo=https://github.com/siddoshi93/checkbox.io.git dest=/root/production-www accept_hostkey=yes version=special
+
+
+    - name: install npm packages
+      npm: path=/root/production-www/server-side/site
+
+    - name: setup nginx configuration files (1)
+      copy: src=/root/production-www/local-conf/default  dest=/etc/nginx/sites-available/default remote_src=yes force=yes
+
+    - name: setup nginx configuration files (2)
+      copy: src=/root/production-www/local-conf/nginx.conf dest=/etc/nginx/nginx.conf remote_src=yes force=yes
+
+    - name: setup nginx configuration files (3)
+      shell: cp -r /root/production-www/public_html/ /usr/share/html/
+
+    - name: restart nginx
+      service:
+       name: nginx
+       state: restarted
+
+    - name: wait for nginx to restart
+      pause:
+        seconds: 15
+
+    - name: update conf
+      replace:
+       dest: /etc/redis/redis.conf
+       regexp: '# slaveof <masterip> <masterport>'
+       replace: "slaveof {{ lookup('env','REDISIP') }} 6379"
+
+    - name: update conf
+      replace:
+       dest: /etc/redis/redis.conf
+       regexp: 'tcp-keepalive 0'
+       replace: 'tcp-keepalive 60'
+
+    - name: Start redis
+      service: name=redis-server state=started enabled=yes
+
+    - name: restart
+      service:
+       name: redis-server
+       state: restarted
+      
+    - name: install forever
+      npm: name=forever state=latest global=yes
+
+    - name: stop previous forever process
+      shell: forever stopall
+
+    - name: run server
+      shell: forever start server.js  chdir=/root/production-www/server-side/site
