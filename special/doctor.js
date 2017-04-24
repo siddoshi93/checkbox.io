@@ -9,7 +9,7 @@ var redisClient = redis.createClient(6379, '127.0.0.1', {})
 
 var lock = false;
 
-
+ //"ssh_keys":[6035151,7239385,8423519],
 var serverMap = {};
 var config = {};
 
@@ -22,8 +22,8 @@ var dropletData =
             "name":"web",
             "region":"nyc3",
             "size":"512mb",
-            "image":"ubuntu-14-04-x64",
-            "ssh_keys":[6035151,7239385,8423519],
+            "image":"ubuntu-14-04-x64",          
+            "ssh_keys":[8075842,8403284,8403407],
             "backups":false,
             "ipv6":false,
             "user_data":null,
@@ -212,8 +212,6 @@ function buildMap()
 
         var droplets = response.body.droplets;
     	
-
-
         for (var i in droplets)
         {
             var ip_addr = droplets[i].networks.v4[0].ip_address;
