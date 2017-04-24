@@ -2,6 +2,19 @@
   tags: ['webserver']
   become: yes
   tasks:
+    - name: copy variables
+      copy:
+        src: /root/out
+        dest: /root/out
+    
+    - name: write to environment
+      command: cat /root/out >> /etc/environment
+
+    - name: set variables
+      shell: "source /etc/environment"
+      args:
+         executable: /bin/bash
+
     - name: install git, nginx, node, npm, redis-server 
       apt: name={{ item }} update_cache=yes state=latest force=yes
       with_items:
@@ -13,8 +26,7 @@
 
     - name: copy git production repository
       git: repo=https://github.com/siddoshi93/checkbox.io.git dest=/root/production-www accept_hostkey=yes version=special
-
-
+  
     - name: install npm packages
       npm: path=/root/production-www/server-side/site
 
