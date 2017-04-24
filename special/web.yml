@@ -1,5 +1,4 @@
-- hosts: webserver
-  tags: ['webserver']
+- hosts: all
   become: yes
   tasks:
     - name: copy variables
@@ -13,8 +12,12 @@
     - name: set variables
       shell: "source /etc/environment"
       args:
-         executable: /bin/bash
+         executable: /bin/bash 
 
+- hosts: webserver
+  tags: ['webserver']
+  become: yes
+  tasks:
     - name: install git, nginx, node, npm, redis-server 
       apt: name={{ item }} update_cache=yes state=latest force=yes
       with_items:
