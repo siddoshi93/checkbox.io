@@ -176,15 +176,16 @@ function runansible(playbook,filename,ip ,isCreate)
             
             //console.log(result.output);
             //console.log(result.code);
-            
+          
+	    if(isCreate)
+	    {
+		lock = false;
+	    }
+		
             if(result.code == 0)
             {
                 console.log(ip);
-                if(isCreate)
-                {
-                	lock = false;
 
-                }
                
                 redisClient.lpush("stable_target_queue", ip);
             	console.log("Added "+ ip + " to redis" );
